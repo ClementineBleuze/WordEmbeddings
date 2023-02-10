@@ -1,2 +1,3 @@
 # Morphalou data (too big for comitting)
 /Morphalou3/data/*.xml
+/Morphalou3/data/*.dtd
