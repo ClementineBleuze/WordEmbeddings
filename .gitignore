@@ -2,3 +2,11 @@
 /Morphalou3/data/*.xml
 /Morphalou3/data/*.dtd
 *.ipynb_checkpoints
+*.pyc
+.DS_Store
+FlauBERT/.idea/vcs.xml
+FlauBERT/.idea/modules.xml
+FlauBERT/.idea/misc.xml
+FlauBERT/.idea/inspectionProfiles/profiles_settings.xml
+FlauBERT/.idea/FlauBERT.iml
+FlauBERT/.idea/workspace.xml
