@@ -42,23 +42,29 @@ def get_we(model, tokenizer, word):
     return we
 
 
-def create_words_df(model, tokenizer, words, transposed=True):
-    words_df = pd.DataFrame()
+def create_words_df(model, tokenizer, words, transposed=True, progress=False, progress_step=1000):
+    words_we = {}
+    counter = 0
     for w in words:
+        if (counter % progress_step == 0) and progress:
+            print('.', end='')
         try:
-            words_df[w] = get_we(model, tokenizer, w)
+            words_we[w] = get_we(model, tokenizer, w)
         except WENotFound:
-            continue
+            pass
+        counter += 1
+
+    words_df = pd.DataFrame(words_we)
     return words_df.transpose() if transposed else words_df
 
 
-def plot_we_heatmap(we_df, label='', size=(20, 3)):
+def plot_we_heatmap(we_df, label='', size=(20, 3), cmap='YlGnBu'):
     n_dim = we_df.shape[1]
     i = 0
     while i < n_dim:
         j = min(i + 100, n_dim)
         fig, ax = plt.subplots(figsize=size)
-        seaborn.heatmap(we_df.iloc[:, i:j], cmap='YlGnBu')
+        seaborn.heatmap(we_df.iloc[:, i:j], cmap=cmap)
         ax.set_title(f'{label}. Dim {i}-{j-1}')
         plt.show()
         i = j
