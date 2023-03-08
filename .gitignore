@@ -3,6 +3,7 @@
 /Morphalou3/data/*.dtd
 *.ipynb_checkpoints
 *.pyc
+*.TMP
 .DS_Store
 FlauBERT/.idea/vcs.xml
 FlauBERT/.idea/modules.xml
