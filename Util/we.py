@@ -1,5 +1,6 @@
 import torch
 from transformers import FlaubertModel, FlaubertTokenizer
+from transformers import AutoTokenizer, AutoModelForMaskedLM
 
 import numpy as np
 import pandas as pd
@@ -13,9 +14,12 @@ class WENotFound(Exception):
 
 
 def initiate_model(name='flaubert/flaubert_small_cased'):
-    flaubert, log = FlaubertModel.from_pretrained(name, output_loading_info=True)
-    flaubert_tokenizer = FlaubertTokenizer.from_pretrained(name, do_lowercase=False)
-    return flaubert, flaubert_tokenizer, log
+    tokenizer = AutoTokenizer.from_pretrained("flaubert/flaubert_small_cased")
+    model = AutoModelForMaskedLM.from_pretrained("flaubert/flaubert_small_cased")
+
+    #flaubert, log = FlaubertModel.from_pretrained(name, output_loading_info=True)
+    #flaubert_tokenizer = FlaubertTokenizer.from_pretrained(name, do_lowercase=False)
+    return model, tokenizer
 
 
 def get_we(model, tokenizer, word):
@@ -24,6 +28,7 @@ def get_we(model, tokenizer, word):
     # embedding. If the word doesn't exist in the vocabulary, the tokenizer would attempt to it by parts like [0, <
     # id of the first part>, <id of the second part>, ..., 1]. That's why we assume that the word exists in the
     # vocabulary only if the encoding is of length 3.
+
     encoding = tokenizer.encode(word)
     if len(encoding) != 3:
         raise WENotFound(f'{word}: the word doesn\'t exist in the vocab')
