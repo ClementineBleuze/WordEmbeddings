@@ -26,15 +26,15 @@ def dimension_clustering_df(y_true, dim_list, df, one_dim=True, logs=False, logs
         # KMeans' 1s or 0s. That's why we are going to evaluate 2 cases.
         # Case 1, non-inverted labels of KMeans classifier:
         y_pred1 = kmeans.labels_
-        p1_micro, r1_micro, f1_micro, nsamples = precision_recall_fscore_support(y_true, y_pred1, average='micro')
+        p1_micro, r1_micro, f1_micro, nsamples = precision_recall_fscore_support(y_true, y_pred1, average='micro', zero_division=0)
 
         # Case 2, inverted labels of KMeans classifier (0s are changed to 1s and 1 are changed to 0s):
         y_pred2 = abs(kmeans.labels_ - 1)
-        p2_micro, r2_micro, f2_micro, nsamples = precision_recall_fscore_support(y_true, y_pred2, average='micro')
+        p2_micro, r2_micro, f2_micro, nsamples = precision_recall_fscore_support(y_true, y_pred2, average='micro', zero_division=0)
 
         # We can decide to use inverted or non-inverted labels by chosing the class with highest micro average:
         if p1_micro > p2_micro:
-            p_macro, r_macro, f_macro, nsamples = precision_recall_fscore_support(y_true, y_pred1, average='macro')
+            p_macro, r_macro, f_macro, nsamples = precision_recall_fscore_support(y_true, y_pred1, average='macro', zero_division=0)
             prf_dict['P_macro_avg'] = p_macro
             prf_dict['R_macro_avg'] = r_macro
             prf_dict['F_macro_avg'] = f_macro
