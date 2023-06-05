@@ -63,7 +63,7 @@ def create_words_df(model, tokenizer, words, transposed=True, progress=False, pr
     return words_df.transpose() if transposed else words_df
 
 
-def plot_we_heatmap(we_df, label='', size=(20, 3), cmap='YlGnBu'):
+def plot_we_heatmap(we_df, label='', size=(20, 3), cmap='YlGnBu', save=None):
     n_dim = we_df.shape[1]
     i = 0
     while i < n_dim:
@@ -71,5 +71,7 @@ def plot_we_heatmap(we_df, label='', size=(20, 3), cmap='YlGnBu'):
         fig, ax = plt.subplots(figsize=size)
         seaborn.heatmap(we_df.iloc[:, i:j], cmap=cmap)
         ax.set_title(f'{label}. Dim {i}-{j-1}')
+        if save:
+            plt.savefig(f"{save}_{i}-{j-1}.png", bbox_inches='tight')
         plt.show()
         i = j
