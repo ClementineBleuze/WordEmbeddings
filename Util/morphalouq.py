@@ -1,3 +1,5 @@
+"""Code to query Morphalou3 database for a given word form."""
+
 import pandas as pd
 
 
