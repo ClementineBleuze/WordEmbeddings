@@ -1,7 +1,39 @@
 from sklearn.cluster import KMeans
+from sklearn.metrics import adjusted_rand_score
 from sklearn.metrics import precision_recall_fscore_support
 import pandas as pd
 import numpy as np
+
+def dimension_clustering_with_ARI(data, dim_list, target):
+
+    df = pd.DataFrame(columns = ["ARI"])
+    ari = [] # list of ARI values
+
+    print("Total number of combinations: ", len(dim_list))
+
+    for i, dim in enumerate(dim_list):
+
+        # Clustering using Kmeans
+        km = KMeans(n_clusters=2, random_state=42, n_init=10)
+        if type(dim_list[0]) == str:
+            km.fit(data[dim].values.reshape(-1, 1))
+        else:   
+            km.fit(data[dim])
+
+        # Compute the Adjusted Rand Index: the closer to 1, the better
+        ari.append(adjusted_rand_score(data[target], km.labels_))
+
+        if i % (len(dim_list)//10) == 0:
+            print("Progress: ", np.round(i/len(dim_list)*100, 0), "%")
+
+    df["ARI"] = ari
+
+    if type(dim_list[0]) == str:
+        df.index = dim_list
+    else:
+        df.index = [str(dim) for dim in dim_list]
+        
+    return df.sort_values(by="ARI", ascending=False)   
 
 
 def dimension_clustering_df(y_true, dim_list, df, one_dim=True, logs=False, logs_freq=1000):
