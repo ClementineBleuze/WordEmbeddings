@@ -67,7 +67,7 @@ def plot_we_heatmap(we_df, label='', size=(20, 3), cmap='YlGnBu', save=None):
     n_dim = we_df.shape[1]
     i = 0
     while i < n_dim:
-        j = min(i + 100, n_dim)
+        j = min(i + 103, n_dim)
         fig, ax = plt.subplots(figsize=size)
         seaborn.heatmap(we_df.iloc[:, i:j], cmap=cmap)
         ax.set_title(f'{label}. Dim {i}-{j-1}')
