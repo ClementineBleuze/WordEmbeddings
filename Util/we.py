@@ -14,11 +14,11 @@ class WENotFound(Exception):
 
 
 def initiate_model(name='flaubert/flaubert_small_cased'):
-    tokenizer = AutoTokenizer.from_pretrained("flaubert/flaubert_small_cased")
-    model = AutoModelForMaskedLM.from_pretrained("flaubert/flaubert_small_cased")
+    tokenizer = AutoTokenizer.from_pretrained(name)
+    model = AutoModelForMaskedLM.from_pretrained(name)
 
-    #flaubert, log = FlaubertModel.from_pretrained(name, output_loading_info=True)
-    #flaubert_tokenizer = FlaubertTokenizer.from_pretrained(name, do_lowercase=False)
+    # flaubert, log = FlaubertModel.from_pretrained(name, output_loading_info=True)
+    # flaubert_tokenizer = FlaubertTokenizer.from_pretrained(name, do_lowercase=False)
     return model, tokenizer
 
 
@@ -38,8 +38,8 @@ def get_we(model, tokenizer, word):
     # We create a Tensor since the model works with this format
     token_ids = torch.tensor([[word_id]])
 
-    # Get the last layer of the model with the final embedding. `last_layer` is a Tensor
-    last_layer = model(token_ids)[0]
+    # Get hidden states of the last layer. The result is a Tensor.
+    last_layer = model(token_ids, output_hidden_states=True).hidden_states[-1]
 
     # Convert the Tensor to a numpy array. Since Tensor is 3-Dimensional, we need to flatten the result as well
     we = last_layer.detach().numpy().flatten()
@@ -47,20 +47,35 @@ def get_we(model, tokenizer, word):
     return we
 
 
-def create_words_df(model, tokenizer, words, transposed=True, progress=False, progress_step=1000):
-    words_we = {}
+def create_we_df(model, tokenizer, words, progress=False, progress_step=1000):
+    # 'model' and 'tokenizer' are expected to be initialized via 'iniate_model' function
+    # 'words' expected to be a Pandas DataFrame with wordforms as its index and features as columns
+    # If progress == true, the function will output a dot for every progress step.
+    # As a result a Pandas DataFrame is returned where index column is the word form, integer-titled columns are
+    # corresponding dimensions and string-titled columns are grammatical features (that were given in columns) of the
+    # 'words' DataFrame.
+
+    words_list = []
+    features = words.columns
+
     counter = 0
-    for w in words:
+    for w in words.index:
         if (counter % progress_step == 0) and progress:
             print('.', end='')
         try:
-            words_we[w] = get_we(model, tokenizer, w)
+            we = get_we(model, tokenizer, w)
+            word_dict = {x[0]: x[1] for x in enumerate(we)}
+            word_dict['Word'] = w
+            for f in features:
+                word_dict[f] = words.loc[w][f]
+            words_list.append(word_dict)
         except WENotFound:
             pass
         counter += 1
 
-    words_df = pd.DataFrame(words_we)
-    return words_df.transpose() if transposed else words_df
+    words_df = pd.DataFrame(words_list)
+    words_df = words_df.set_index('Word')
+    return words_df
 
 
 def plot_we_heatmap(we_df, label='', size=(20, 3), cmap='YlGnBu', save=None):
@@ -70,8 +85,8 @@ def plot_we_heatmap(we_df, label='', size=(20, 3), cmap='YlGnBu', save=None):
         j = min(i + 103, n_dim)
         fig, ax = plt.subplots(figsize=size)
         seaborn.heatmap(we_df.iloc[:, i:j], cmap=cmap)
-        ax.set_title(f'{label}. Dim {i}-{j-1}')
+        ax.set_title(f'{label}. Dim {i}-{j - 1}')
         if save:
-            plt.savefig(f"{save}_{i}-{j-1}.png", bbox_inches='tight')
+            plt.savefig(f"{save}_{i}-{j - 1}.png", bbox_inches='tight')
         plt.show()
         i = j
