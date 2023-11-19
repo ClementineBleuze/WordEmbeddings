@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 
 
@@ -22,7 +23,7 @@ def encode_feature(feature):
     return feature_encoded
 
 
-def prepare_dataset(dataset, feature_col_count, feature_name):
+def prepare_dataset(dataset, feature_col_count, feature_name, encode=False, split=False):
     # The function assumes that `dataset` is a Pandas DataFrame where last n columns are feature columns
     # and all [0:n] columns are dimensions of the WE.
     # n is equal to feature_col_count.
@@ -30,5 +31,20 @@ def prepare_dataset(dataset, feature_col_count, feature_name):
     # The words are shuffled prior to the return.
 
     dims = dataset.iloc[:, :-feature_col_count]
+    
+    # Encode the feauture using LabelEncoder
+    if encode:
+        dataset[feature_name] = encode_feature(dataset[feature_name])
+    
+    # Normalize dimensions using min and max
+    normalized_dims = (dims - dims.min())/(dims.max() - dims.min())
+    
+    X, y = shuffle(normalized_dims, dataset[feature_name])
+    
+    # Split into test and train if specified. The split is 80/20
+    if split:
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        return X_train, X_test, y_train, y_test
+    else:
+        return X, y
 
-    return shuffle((dims - dims.min())/(dims.max() - dims.min()), dataset[feature_name])
