@@ -3,8 +3,12 @@ import numpy as np
 
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression, Perceptron
-from sklearn.cluster import KMeans
 from sklearn.metrics import adjusted_rand_score
+from sklearn.feature_selection import mutual_info_classif
+
+
+from scipy.stats import f_oneway
+
 
 from perceptron import get_perceptron_weights
 from preparation import encode_feature, enumerate_and_sort
@@ -33,6 +37,23 @@ def aabcc_for_sequence(seq: list):
             val = seq[i]
 
     return score
+
+def get_anova_dims(dims_df, feature_vec, pv_threshold=0.01):
+    anova_dims = []
+    for dim in dims_df.columns:
+        sample1 = [x[0] for x in zip(dims_df[dim], feature_vec) if x[1] == 0]
+        sample2 = [x[0] for x in zip(dims_df[dim], feature_vec) if x[1] == 1]
+        if f_oneway(sample1, sample2).pvalue < pv_threshold:
+            anova_dims.append(dim)
+    
+    return anova_dims
+
+
+def get_mi_dims(dims_df, feature_vec):
+    res = mutual_info_classif(dims_df, feature_vec, discrete_features=[False]*len(dims_df.columns))
+    non_indep_dims = [str(x[0]) for x in np.argwhere(res > 0)]
+    return non_indep_dims
+    
 
 
 def aabcc(dims_df, feature):

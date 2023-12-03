@@ -23,23 +23,37 @@ def encode_feature(feature):
     return feature_encoded
 
 
-def prepare_dataset(dataset, feature_col_count, feature_name, encode=False, split=False):
+def prepare_dataset(dataset, feature_col_count, feature_name, normalize=False, encode=False, encode_as1=None, split=False, balance=False):
     # The function assumes that `dataset` is a Pandas DataFrame where last n columns are feature columns
     # and all [0:n] columns are dimensions of the WE.
     # n is equal to feature_col_count.
     # The function will return normalized values of dimensions of WE and the feature vector.
     # The words are shuffled prior to the return.
 
-    dims = dataset.iloc[:, :-feature_col_count]
     
     # Encode the feauture using LabelEncoder
     if encode:
-        dataset[feature_name] = encode_feature(dataset[feature_name])
+        if encode_as1:
+            dataset[feature_name] = (dataset[feature_name] == encode_as1).apply(int)
+        else:
+            dataset[feature_name] = encode_feature(dataset[feature_name])
+        
+    if balance:
+        new_dataset = []
+        min_values = min([len(dataset[dataset[feature_name] == x]) for x in set(dataset[feature_name])])
+
+        for feature_value in set(dataset[feature_name]):
+            new_dataset.append(dataset[dataset[feature_name] == feature_value].sample(n=min_values))
+        
+        dataset = pd.concat(new_dataset)
+    
+    dims = dataset.iloc[:, :-feature_col_count]
     
     # Normalize dimensions using min and max
-    normalized_dims = (dims - dims.min())/(dims.max() - dims.min())
+    if normalize:
+        dims = (dims - dims.min())/(dims.max() - dims.min())
     
-    X, y = shuffle(normalized_dims, dataset[feature_name])
+    X, y = shuffle(dims, dataset[feature_name])
     
     # Split into test and train if specified. The split is 80/20
     if split:
