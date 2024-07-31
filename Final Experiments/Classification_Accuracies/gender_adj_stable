@@ -1,0 +1,16 @@
+\begin{tabular}{lrrrrr}
+\toprule
+ & KNeighborsClassifier & GaussianNB & LogisticRegression & RandomForestClassifier & DecisionTreeClassifier \\
+\midrule
+flau_small_c & 0.717861 & 0.791103 & 0.911112 & 0.804127 & 0.621532 \\
+flau_base_u & 0.529199 & 0.571104 & 0.581883 & 0.574601 & 0.527626 \\
+flau_base_c & 0.579501 & 0.617389 & 0.625085 & 0.623648 & 0.546010 \\
+flau_large_c & 0.815036 & 0.862652 & 0.896143 & 0.858761 & 0.684539 \\
+cam_base & 0.494284 & 0.517659 & 0.514482 & 0.500638 & 0.499368 \\
+xlm_large & 0.000000 & 0.000000 & 0.000000 & 0.000000 & 0.000000 \\
+xlm_base & 0.000000 & 0.000000 & 0.000000 & 0.000000 & 0.000000 \\
+bert_base_u & 0.000000 & 0.000000 & 0.000000 & 0.000000 & 0.000000 \\
+distilbert_base & 0.548867 & 0.597087 & 0.599676 & 0.597735 & 0.537217 \\
+bert_base_c & 0.542718 & 0.500000 & 0.488673 & 0.532362 & 0.503883 \\
+\bottomrule
+\end{tabular}
