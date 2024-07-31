@@ -10,23 +10,23 @@ For the models, we only chose those BERT-like models working with the French lag
 - mBERT (base cased, base uncased)
 - DistilBERT (base cased)
 
-For the target linguistic features we used existing resources.
-From Morphalou3:
+For the target linguistic features, we used existing resources.
+From [Morphalou3](https://www.ortolang.fr/market/lexicons/morphalou):
 - Grammatical gender of nouns and adjectives
 - Grammatical number of nouns and adjectives
 - Part of speech information for nouns, adjectives, and verbs
 
-From Sequoia:
+From [Sequoia](https://github.com/FrSemCor/FrSemCor/blob/master/sequoia-9.1.frsemcor):
 - Semantic category Act and Person for nouns
 
 # Repository structure
-1. Retrieving word embeddings of the pre-trained models (for models trained on French data only, for multilingual models).
-2. Comparing tokenization of the same words by different models.
-3. InfEnc calculation for gender feature (for nouns only, for adjectives only, for nouns and adjectives combined).
-4. InfEnc calculation for number feature (for nouns only, for adjectives only, for nouns and adjectives combined).
-5. InfEnc calculation for PoS feature (for nouns, for adjectives, for verbs).
-6. InfEnc calculation for semantic category of nouns (for Person, for Act).
+1. Retrieving word embeddings of the pre-trained models (for models trained on [French data only](https://github.com/ClementineBleuze/WordEmbeddings/blob/main/Final%20Experiments/0a%20-%20Building_corpora.ipynb), for [multilingual models](https://github.com/ClementineBleuze/WordEmbeddings/blob/main/Final%20Experiments/0b%20-%20Building_more_corpora.ipynb)).
+2. Comparing tokenization of the same words by [different models](https://github.com/ClementineBleuze/WordEmbeddings/blob/main/Final%20Experiments/0c%20-%20Adding%20semantic%20information.ipynb).
+3. InfEnc calculation for the gender feature (for [nouns only](https://github.com/ClementineBleuze/WordEmbeddings/blob/main/Final%20Experiments/1a%20-%20Gender%20experiment%2C%20NOUN.ipynb), for [adjectives only](https://github.com/ClementineBleuze/WordEmbeddings/blob/main/Final%20Experiments/1b%20-%20Gender%20experiment%2C%20ADJ.ipynb), for [nouns and adjectives combined](https://github.com/ClementineBleuze/WordEmbeddings/blob/main/Final%20Experiments/1c%20-%20Gender%20experiment%2C%20NOUN%26ADJ.ipynb)).
+4. InfEnc calculation for the number feature (for nouns only, for adjectives only, for nouns and adjectives combined).
+5. InfEnc calculation for the PoS feature (for nouns, for adjectives, for verbs).
+6. InfEnc calculation for the semantic category of nouns (for Person, for Act).
 7. Number of obtained stable dimensions for each feature and the intersections between different features.
 
 # Publication
-Ekaterina Goliakova, David Langlois. 2024. What do BERT word embeddings learn about the French language?. In Proceedings of the 5th International Conference on Computational Linguistics in Bulgaria (CLIB 2022), pages 8–12, Sofia, Bulgaria. Department of Computational Linguistics, IBL -- BAS.
+Ekaterina Goliakova, David Langlois. 2024. [What do BERT word embeddings learn about the French language?](https://github.com/ClementineBleuze/WordEmbeddings/blob/main/Reports/What%20do%20BERT%20word%20embeddings%20learn%20about%20the%20French%20language%3F.pdf). In *Proceedings of the 6th International Conference on Computational Linguistics in Bulgaria (CLIB 2024)*, Bulgaria. Department of Computational Linguistics, IBL -- BAS.
